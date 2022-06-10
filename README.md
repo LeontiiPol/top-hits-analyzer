@@ -39,3 +39,11 @@ deciles taking into account songs that were released on specified year only.
    1. *http://localhost:8080/api/songs/deciles?colname=duration_ms*
    2. *http://localhost:8080/api/songs/deciles?colname=key&year=2008*
 6. to see API documentation open *http://localhost:8080/swagger-ui/*
+7. run `docker stop top-hits-analyzer` to stop container
+
+## Run using Gradle
+1. clone this repo
+2. open the terminal in the project root folder (topHitsAnalyzer)
+3. make sure you use java 11
+4. run `gradle build`
+5. run `java -jar build/libs/TopHitsAnalyzer-1.0.0.jar`
