@@ -15,7 +15,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import polovinko.leontii.tophitsanalyzer.dto.SongsDecile;
+import polovinko.leontii.tophitsanalyzer.dto.decile.BaseDecile;
+import polovinko.leontii.tophitsanalyzer.dto.decile.DoubleDecile;
+import polovinko.leontii.tophitsanalyzer.dto.decile.IntegerDecile;
 import polovinko.leontii.tophitsanalyzer.exception.TopHitsAnalyzerValidationException;
 import polovinko.leontii.tophitsanalyzer.model.CsvColumnCell;
 import polovinko.leontii.tophitsanalyzer.model.SongsCsvColumn;
@@ -45,13 +47,23 @@ class DefaultSongsServiceUnitTest {
    }
 
    @Test
-   void getDecilesForColumn_whenMethodInvoked_thenDecilesReturned() {
+   void getDecilesForColumn_whenMethodInvokedOnCsvColumnThatContainsDoubleData_thenDoubleDecilesReturned() {
       when(csvService.readCsvColumn(SongsCsvColumn.DANCEABILITY)).thenReturn(csvColumnCells);
 
-      List<SongsDecile> deciles = defaultSongsService.getDecilesForColumn(SongsCsvColumn.DANCEABILITY);
+      List<BaseDecile> deciles = defaultSongsService.getDecilesForColumn(SongsCsvColumn.DANCEABILITY);
 
       assertEquals(10, deciles.size());
-      assertAll(getAssertionsToCheckDeciles(deciles, csvColumnCells));
+      assertAll(getAssertionsToCheckDoubleDeciles(deciles, csvColumnCells));
+   }
+
+   @Test
+   void getDecilesForColumn_whenMethodInvokedOnCsvColumnThatContainsIntegerData_thenIntegerDecilesReturned() {
+      when(csvService.readCsvColumn(SongsCsvColumn.DURATION_MS)).thenReturn(csvColumnCells);
+
+      List<BaseDecile> deciles = defaultSongsService.getDecilesForColumn(SongsCsvColumn.DURATION_MS);
+
+      assertEquals(10, deciles.size());
+      assertAll(getAssertionsToCheckIntegerDeciles(deciles, csvColumnCells));
    }
 
    @Test
@@ -60,21 +72,21 @@ class DefaultSongsServiceUnitTest {
       Collections.shuffle(shuffledCsvColumnCells);
       when(csvService.readCsvColumn(SongsCsvColumn.DANCEABILITY)).thenReturn(shuffledCsvColumnCells);
 
-      List<SongsDecile> deciles = defaultSongsService.getDecilesForColumn(SongsCsvColumn.DANCEABILITY);
+      List<BaseDecile> deciles = defaultSongsService.getDecilesForColumn(SongsCsvColumn.DANCEABILITY);
 
       assertEquals(10, deciles.size());
-      assertAll(getAssertionsToCheckDeciles(deciles, csvColumnCells));
+      assertAll(getAssertionsToCheckDoubleDeciles(deciles, csvColumnCells));
    }
 
    @Test
    void getDecilesForColumnFilteredByYear_whenMethodInvoked_thenDecilesOfFilteredColumnReturned() {
       when(csvService.readCsvColumnFilteredByYear(SongsCsvColumn.DANCEABILITY, 2005)).thenReturn(csvColumnCells);
 
-      List<SongsDecile> deciles =
+      List<BaseDecile> deciles =
           defaultSongsService.getDecilesForColumnFilteredByYear(SongsCsvColumn.DANCEABILITY, 2005);
 
       assertEquals(10, deciles.size());
-      assertAll(getAssertionsToCheckDeciles(deciles, csvColumnCells));
+      assertAll(getAssertionsToCheckDoubleDeciles(deciles, csvColumnCells));
    }
 
    @ParameterizedTest(name = "{index} {0}")
@@ -88,14 +100,32 @@ class DefaultSongsServiceUnitTest {
       assertEquals(exceptionMessage, exception.getMessage());
    }
 
-   private Executable[] getAssertionsToCheckDeciles(List<SongsDecile> deciles, List<CsvColumnCell> csvColumnCells) {
+   private Executable[] getAssertionsToCheckDoubleDeciles(List<BaseDecile> deciles, List<CsvColumnCell> csvColumnCells) {
       List<Executable> assertions = new ArrayList<>();
       for (int i = 0; i < deciles.size(); i++) {
+         DoubleDecile doubleDecile = (DoubleDecile) deciles.get(i);
+         Double actualMin = doubleDecile.getMin();
+         Double actualMax = doubleDecile.getMax();
+         Long actualCount = deciles.get(i).getCount();
          Double expectedMin = csvColumnCells.get(2 * i).getData();
          Double expectedMax = csvColumnCells.get(2 * i + 1).getData();
-         Double actualMin = deciles.get(i).getMin().doubleValue();
-         Double actualMax = deciles.get(i).getMax().doubleValue();
+
+         assertions.add(() -> assertEquals(expectedMin, actualMin));
+         assertions.add(() -> assertEquals(expectedMax, actualMax));
+         assertions.add(() -> assertEquals(2, actualCount));
+      }
+      return assertions.toArray(Executable[]::new);
+   }
+
+   private Executable[] getAssertionsToCheckIntegerDeciles(List<BaseDecile> deciles, List<CsvColumnCell> csvColumnCells) {
+      List<Executable> assertions = new ArrayList<>();
+      for (int i = 0; i < deciles.size(); i++) {
+         IntegerDecile integerDecile = (IntegerDecile) deciles.get(i);
+         Integer actualMin = integerDecile.getMin();
+         Integer actualMax = integerDecile.getMax();
          Long actualCount = deciles.get(i).getCount();
+         Integer expectedMin = csvColumnCells.get(2 * i).getData().intValue();
+         Integer expectedMax = csvColumnCells.get(2 * i + 1).getData().intValue();
 
          assertions.add(() -> assertEquals(expectedMin, actualMin));
          assertions.add(() -> assertEquals(expectedMax, actualMax));

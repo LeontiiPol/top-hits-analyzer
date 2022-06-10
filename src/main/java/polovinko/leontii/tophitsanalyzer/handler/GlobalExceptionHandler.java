@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import polovinko.leontii.tophitsanalyzer.dto.ErrorResponseBody;
+import polovinko.leontii.tophitsanalyzer.dto.error.ErrorResponseBody;
 import polovinko.leontii.tophitsanalyzer.exception.TopHitsAnalyzerValidationException;
 import java.time.LocalDateTime;
 

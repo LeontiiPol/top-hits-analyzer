@@ -1,4 +1,4 @@
-package polovinko.leontii.tophitsanalyzer.dto;
+package polovinko.leontii.tophitsanalyzer.dto.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

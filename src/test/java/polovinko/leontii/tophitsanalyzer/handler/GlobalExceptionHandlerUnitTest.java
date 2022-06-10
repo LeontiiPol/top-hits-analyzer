@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import polovinko.leontii.tophitsanalyzer.dto.ErrorResponseBody;
+import polovinko.leontii.tophitsanalyzer.dto.error.ErrorResponseBody;
 import polovinko.leontii.tophitsanalyzer.exception.TopHitsAnalyzerValidationException;
 
 class GlobalExceptionHandlerUnitTest {
