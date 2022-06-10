@@ -1,0 +1,3 @@
+csv:
+  paths:
+    songs: "classpath:songs_test.csv"
