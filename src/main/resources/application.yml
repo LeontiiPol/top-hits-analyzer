@@ -1,3 +1,23 @@
 csv:
   paths:
     songs: "classpath:songs_normalize.csv"
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+swagger:
+  app:
+    description: "<p>Top Hits Analyzer API analyzes csv file which contains dataset of 2000 records from Spotify. 
+    Dataset contains information about top hit songs from 2000 to 2019 years. You can check more detailed information 
+    about dataset <a href='https://www.kaggle.com/datasets/paradisejoy/top-hits-spotify-from-20002019'>here</a>.<br/>
+    API has single endpoing <b><i>/api/songs/deciles</i></b> which requires mandatory request parameter 'colname' 
+    and optional parameter 'year', and returns <a href='https://math.semestr.ru/group/deciles.php'>deciles</a> 
+    counted on a csv column's data.<br/>
+    'colname' accepts name of column to calculate deciles. You can check available column names in the 
+    controller example below.<br/>
+    'year' accepts year from 2000 to 2019 to filter dataset records taking into account songs of specified year
+    while calculating deciles.</p>"
+  developer:
+    name: Leontii Polovinko
+    cv: https://spb.hh.ru/resume/e601416dff0adbfba60039ed1f713367527774
+    email: leontiypolovinko@gmail.com
